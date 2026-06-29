@@ -1,0 +1,47 @@
+name: Windows ProjFS build
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install stable Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Build ProjFS backend
+        run: cargo build --features projfs
+
+      - name: Enable ProjFS (tolerant)
+        shell: pwsh
+        continue-on-error: true
+        run: |
+          try {
+            Write-Host 'Attempting Client-ProjFS via Enable-WindowsOptionalFeature'
+            Enable-WindowsOptionalFeature -Online -FeatureName Client-ProjFS -NoRestart -All
+          } catch {
+            Write-Host "Client-ProjFS enable failed: $($_.Exception.Message)"
+          }
+          try {
+            Write-Host 'Attempting Server feature name ProjectedFSClient'
+            Enable-WindowsOptionalFeature -Online -FeatureName ProjectedFSClient -NoRestart -All
+          } catch {
+            Write-Host "ProjectedFSClient enable failed: $($_.Exception.Message)"
+          }
+          try {
+            Write-Host 'Attempting DISM fallback'
+            dism /online /enable-feature /featurename:Client-ProjFS /all /norestart
+          } catch {
+            Write-Host "DISM fallback failed: $($_.Exception.Message)"
+          }
+          Write-Host 'ProjFS enable attempts complete; continuing regardless'
+          exit 0
+
+      - name: Run ProjFS smoke
+        env:
+          LUNAR_SMOKE: "1"
+        run: cargo test --features projfs --test projfs_smoke -- --nocapture
