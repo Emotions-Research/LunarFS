@@ -1,0 +1,10 @@
+/target
+**/node_modules
+**/dist
+**/.next
+*.db
+*.db-shm
+*.db-wal
+.DS_Store
+.env*
+.vercel
