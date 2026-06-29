@@ -1,0 +1,80 @@
+name: lunar-multidevice
+
+services:
+  server:
+    build:
+      context: ../..
+      dockerfile: Dockerfile
+    environment:
+      - LUNAR_STORAGE_BACKEND=local
+      - LUNAR_STORAGE_PATH=/data/store
+      - LUNAR_DB_PATH=/data/lunar.db
+      - LUNAR_HOST=0.0.0.0
+      - LUNAR_PORT=8787
+    volumes:
+      - server-data:/data
+    ports:
+      - "8787:8787"
+    networks:
+      - lunar-net
+
+  device-a:
+    build:
+      context: ../..
+      dockerfile: test/multidevice/Dockerfile
+    environment:
+      - LUNAR_BASE_URL=http://server:8787
+      - LUNAR_TOKEN=${LUNAR_TOKEN}
+      - LUNAR_ORG=team
+      - HOME=/home/devA
+    volumes:
+      - device-a-data:/home/devA
+    networks:
+      - lunar-net
+    depends_on:
+      - server
+    command: ["tail", "-f", "/dev/null"]
+
+  device-b:
+    build:
+      context: ../..
+      dockerfile: test/multidevice/Dockerfile
+    environment:
+      - LUNAR_BASE_URL=http://server:8787
+      - LUNAR_TOKEN=${LUNAR_TOKEN}
+      - LUNAR_ORG=team
+      - HOME=/home/devB
+    volumes:
+      - device-b-data:/home/devB
+    networks:
+      - lunar-net
+    depends_on:
+      - server
+    command: ["tail", "-f", "/dev/null"]
+
+  device-c:
+    build:
+      context: ../..
+      dockerfile: test/multidevice/Dockerfile
+    environment:
+      - LUNAR_BASE_URL=http://server:8787
+      - LUNAR_TOKEN=${LUNAR_TOKEN}
+      - LUNAR_ORG=team
+      - HOME=/home/devC
+    volumes:
+      - device-c-data:/home/devC
+    networks:
+      - lunar-net
+    depends_on:
+      - server
+    command: ["tail", "-f", "/dev/null"]
+
+volumes:
+  server-data:
+  device-a-data:
+  device-b-data:
+  device-c-data:
+
+networks:
+  lunar-net:
+    driver: bridge
