@@ -1,0 +1,25 @@
+<svg width="760" height="220" viewBox="0 0 760 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="moon2" x1="70" y1="58" x2="158" y2="170" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#EAF1FF"/>
+      <stop offset="1" stop-color="#8AA3CC"/>
+    </linearGradient>
+    <mask id="crescent2">
+      <rect x="44" y="44" width="132" height="132" fill="black"/>
+      <circle cx="100" cy="110" r="56" fill="white"/>
+      <circle cx="128" cy="94" r="50" fill="black"/>
+    </mask>
+    <linearGradient id="bg" x1="0" y1="0" x2="760" y2="220" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0B0D14"/>
+      <stop offset="1" stop-color="#0E1320"/>
+    </linearGradient>
+  </defs>
+  <rect width="760" height="220" rx="28" fill="url(#bg)"/>
+  <!-- mark -->
+  <circle cx="128" cy="94" r="50" stroke="#33425E" stroke-width="2" fill="none" opacity="0.55"/>
+  <rect x="44" y="44" width="132" height="132" fill="url(#moon2)" mask="url(#crescent2)"/>
+  <!-- wordmark -->
+  <text x="214" y="128" font-family="'SF Pro Display','Helvetica Neue',Inter,system-ui,sans-serif" font-size="80" font-weight="600" letter-spacing="-1">
+    <tspan fill="#EAF1FF">lunar</tspan><tspan fill="#6E8BFF" font-family="ui-monospace,'SF Mono','JetBrains Mono',monospace" font-weight="500">fs</tspan>
+  </text>
+</svg>

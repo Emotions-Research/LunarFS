@@ -1,0 +1,17 @@
+<svg width="256" height="256" viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="moon" x1="56" y1="44" x2="184" y2="214" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#EAF1FF"/>
+      <stop offset="1" stop-color="#8AA3CC"/>
+    </linearGradient>
+    <mask id="crescent">
+      <rect width="256" height="256" fill="black"/>
+      <circle cx="118" cy="128" r="80" fill="white"/>
+      <circle cx="158" cy="106" r="72" fill="black"/>
+    </mask>
+  </defs>
+  <!-- ghost copy: the offset base disk, faint, hints at copy-on-write -->
+  <circle cx="158" cy="106" r="72" stroke="#33425E" stroke-width="2" fill="none" opacity="0.55"/>
+  <!-- main crescent (base disk minus offset copy) -->
+  <rect width="256" height="256" fill="url(#moon)" mask="url(#crescent)"/>
+</svg>
