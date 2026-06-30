@@ -1,0 +1,64 @@
+# LunarFS self-host server -- compose configuration
+#
+# This file starts the LunarFS control plane in API-token-only auth mode
+# (Clerk JWT auth is DISABLED: the server defaults to self-host mode when
+# CLERK_ISSUER / CLERK_AUDIENCE / CLERK_JWKS_URL are absent).
+#
+# Usage:
+#   docker compose up -d
+#
+# Before starting, see docs/self-host.md to mint your first API token.
+
+services:
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    # ---------- server bind and base URL ------------------------------------
+    environment:
+      LUNAR_HOST: "0.0.0.0"
+      LUNAR_PORT: "8787"
+
+      # Public URL that clients set as LUNAR_BASE_URL when pointing at this
+      # server. Informational only (the server does not read it at runtime);
+      # document it here so operators keep the value consistent.
+      # LUNAR_BASE_URL: "http://localhost:8787"
+
+      # ---------- local filesystem storage (default) -----------------------
+      # Blobs and refs are stored under /data/store inside the container.
+      # The named volume "lunar-data" is mounted at /data.
+      LUNAR_STORAGE_BACKEND: "local"
+      LUNAR_STORAGE_PATH: "/data/store"
+      LUNAR_DB_PATH: "/data/lunar.db"
+
+      # ---------- S3 / Cloudflare R2 storage (alternative) ----------------
+      # To switch to S3 or R2: comment out the local block above and
+      # uncomment the lines below. No other change is needed.
+      #
+      # LUNAR_STORAGE_BACKEND: "s3"
+      # LUNAR_S3_BUCKET: "${LUNAR_S3_BUCKET:-my-bucket}"
+      #
+      # AWS / S3 credentials (the names the server actually reads):
+      # AWS_ACCESS_KEY_ID: "${AWS_ACCESS_KEY_ID:-}"
+      # AWS_SECRET_ACCESS_KEY: "${AWS_SECRET_ACCESS_KEY:-}"
+      # AWS_REGION: "${AWS_REGION:-auto}"
+      #
+      # For Cloudflare R2 set the endpoint to your account R2 URL:
+      # AWS_ENDPOINT: "${AWS_ENDPOINT:-https://<account-id>.r2.cloudflarestorage.com}"
+      #
+      # Note: the server reads AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY
+      # (standard AWS names). It also accepts S3_ACCESS_KEY_ID /
+      # S3_SECRET_ACCESS_KEY as fallbacks.
+
+    ports:
+      - "${LUNAR_PORT:-8787}:8787"
+
+    volumes:
+      # Named volume persists blobs, the SQLite DB, and workspace overlays.
+      - lunar-data:/data
+
+    restart: unless-stopped
+
+volumes:
+  lunar-data:
