@@ -1,6 +1,6 @@
 [package]
 name = "devdropbox"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 description = "Instant copy-on-write workspaces for coding agents, backed by a BLAKE3 content-addressed store."
 repository = "https://github.com/Emotions-Research/LunarFS"
